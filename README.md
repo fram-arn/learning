@@ -18,5 +18,5 @@ initial data:
 - INSERT INTO role_privilege (role_id, privilege_id) VALUES(2, 2);
 
 
-# TO DO
+## TO DO
 Create some setup data automatically when the program is ran for the first time.
