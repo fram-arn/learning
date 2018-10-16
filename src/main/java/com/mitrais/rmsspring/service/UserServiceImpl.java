@@ -55,4 +55,12 @@ public class UserServiceImpl implements UserService {
 		return userDetail;
 	}
 
+	@Override
+	public void saveUser(User user, Long idRole) {
+		user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        Role role = roleRepository.findById(idRole).get();
+        user.setRoles(new HashSet<>(Arrays.asList(role)));
+        userRepository.save(user);
+	}
+
 }

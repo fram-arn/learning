@@ -1,8 +1,11 @@
 package com.mitrais.rmsspring.controller;
 
 import com.mitrais.rmsspring.dto.UserDetailDTO;
+import com.mitrais.rmsspring.form.AddRoleForm;
 import com.mitrais.rmsspring.form.UserRegistrationForm;
 import com.mitrais.rmsspring.model.User;
+import com.mitrais.rmsspring.service.PrivilegeService;
+import com.mitrais.rmsspring.service.RoleService;
 import com.mitrais.rmsspring.service.UserService;
 
 import java.security.Principal;
@@ -10,6 +13,7 @@ import java.security.Principal;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,6 +26,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class UserController {
     @Autowired
     private UserService userService;
+    @Autowired
+    private PrivilegeService privilegeService;
+    @Autowired
+    private RoleService roleService;
     
     @RequestMapping(value = {"/login"}, method = RequestMethod.GET)
     public String login(){
@@ -30,7 +38,6 @@ public class UserController {
 
     @RequestMapping(value = {"/"}, method = RequestMethod.GET)
     public String index(Principal principal, Model model){
-    	model.addAttribute("username", principal.getName());
     	//user detail
     	UserDetailDTO userDetail = userService.getUserDetail(principal.getName());
     	model.addAttribute("userDetail", userDetail);
@@ -40,6 +47,7 @@ public class UserController {
     @RequestMapping(value = {"/register"}, method = RequestMethod.GET)
     public String register(Model model){
         model.addAttribute("userForm", new UserRegistrationForm());
+        model.addAttribute("allRoles", roleService.getRoles());
         return "register";
     }
 
@@ -58,8 +66,26 @@ public class UserController {
         User user = new User();
         user.setUsername(userForm.getUsername());
         user.setPassword(userForm.getPassword());
-        userService.saveUser(user);
+        userService.saveUser(user, userForm.getIdRole());
 
         return "redirect:/";
+    }
+    
+    @PreAuthorize("hasAuthority('WRITE_PRIVILEGE')")
+    @RequestMapping(value = {"/add-role"}, method = RequestMethod.GET)
+    public String addRole(Model model){
+        model.addAttribute("roleForm", new AddRoleForm());
+        model.addAttribute("listPrivileges", privilegeService.getPrivilege());
+        model.addAttribute("listRoles", roleService.getRoles());
+        return "add-role";
+    }
+    
+    @PreAuthorize("hasAuthority('WRITE_PRIVILEGE')")
+    @RequestMapping(value = {"/add-role"}, method = RequestMethod.POST)
+    public String addRolePost(@ModelAttribute("roleForm") AddRoleForm roleForm, Model model){
+        if(roleForm.getIdPrivileges().size() > 0) {
+        	roleService.saveRoles(roleForm.getRoleName(), privilegeService.getPrivilege(roleForm.getIdPrivileges()));
+        }
+        return "redirect:/add-role";
     }
 }

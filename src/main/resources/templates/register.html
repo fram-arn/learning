@@ -52,6 +52,15 @@
         <span class="glyphicon glyphicon-log-in form-control-feedback"></span>
         <span style="color: red;" th:if="${#fields.hasErrors('passwordConfirm')}" th:errors="*{passwordConfirm}"></span>
       </div>
+      <div class="form-group has-feedback">
+        <select th:field="*{idRole}" >
+      	  <option value=""  selected="selected">Choose your role</option>
+		  <option th:each="role : ${allRoles}" 
+		          th:value="${role.id}" 
+		          th:text="${role.name}">Admin</option>
+		</select>
+		<span style="color: red;" th:if="${#fields.hasErrors('idRole')}" th:errors="*{idRole}"></span>
+      </div>
       <div class="row">
         <!-- /.col -->
         <div class="col-xs-4">
@@ -73,14 +82,5 @@
 <script th:src="@{../lib/bootstrap/dist/js/bootstrap.min.js}" src="../../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 <!-- iCheck -->
 <script th:src="@{../lib/bootstrap/dist/js/bootstrap.min.js}" src="../../plugins/iCheck/icheck.min.js"></script>
-<script>
-  $(function () {
-    $('input').iCheck({
-      checkboxClass: 'icheckbox_square-blue',
-      radioClass: 'iradio_square-blue',
-      increaseArea: '20%' /* optional */
-    });
-  });
-</script>
 </body>
 </html>

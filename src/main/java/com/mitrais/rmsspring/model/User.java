@@ -5,9 +5,10 @@ import java.util.Set;
 
 @Entity
 @Table(name = "user")
+@SequenceGenerator(name="user_seq", initialValue = 100)
 public class User {
 	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator="user_seq")
     private Long id;
     private String username;
     private String password;

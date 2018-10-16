@@ -5,6 +5,7 @@ import com.mitrais.rmsspring.model.User;
 
 public interface UserService {
     void saveUser(User user);
+    void saveUser(User user, Long idRole);
     User findByUsername(String username);
     UserDetailDTO getUserDetail(String username);
     

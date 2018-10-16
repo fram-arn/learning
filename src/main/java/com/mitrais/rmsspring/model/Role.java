@@ -5,9 +5,10 @@ import java.util.Set;
 
 @Entity
 @Table(name = "role")
+@SequenceGenerator(name="role_seq", initialValue = 200)
 public class Role {
 	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator="role_seq")
     private Long id;
     private String name;
     @ManyToMany(mappedBy = "roles")

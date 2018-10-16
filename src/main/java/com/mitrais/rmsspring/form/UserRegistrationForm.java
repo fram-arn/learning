@@ -13,6 +13,8 @@ public class UserRegistrationForm {
     @NotNull
     @Size(min=8, message="Password must minimal 8 characters")
     private String passwordConfirm;
+    @NotNull
+    private Long idRole;
 	public String getUsername() {
 		return username;
 	}
@@ -30,6 +32,12 @@ public class UserRegistrationForm {
 	}
 	public void setPasswordConfirm(String passwordConfirm) {
 		this.passwordConfirm = passwordConfirm;
+	}
+	public Long getIdRole() {
+		return idRole;
+	}
+	public void setIdRole(Long idRole) {
+		this.idRole = idRole;
 	}
     
     
