@@ -25,14 +25,20 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    
     @Override
-    @Transactional
-    public void saveUser(User user) {
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        Role role = roleRepository.findByName("USER");
+	@Transactional
+	public void saveUser(User user, Long idRole) {
+		user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+		Role role;
+		if(idRole == null) {
+	        role = roleRepository.findByName("USER");
+		}else {
+			role = roleRepository.findById(idRole).get();
+		}
         user.setRoles(new HashSet<>(Arrays.asList(role)));
         userRepository.save(user);
-    }
+	}
 
     @Override
     public User findByUsername(String username) {
@@ -54,13 +60,4 @@ public class UserServiceImpl implements UserService {
     	}
 		return userDetail;
 	}
-
-	@Override
-	public void saveUser(User user, Long idRole) {
-		user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        Role role = roleRepository.findById(idRole).get();
-        user.setRoles(new HashSet<>(Arrays.asList(role)));
-        userRepository.save(user);
-	}
-
 }
