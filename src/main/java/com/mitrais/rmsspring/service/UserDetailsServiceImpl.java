@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -33,20 +35,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     private Collection<? extends GrantedAuthority> getAuthorities(
             Set<Role> roles) {
-
         return getGrantedAuthorities(getPrivileges(roles));
     }
 
     private List<String> getPrivileges(Set<Role> roles) {
-
-        List<String> privileges = new ArrayList<>();
-        List<Privilege> collection = new ArrayList<>();
-        for (Role role : roles) {
-            collection.addAll(role.getPrivileges());
-        }
-        for (Privilege item : collection) {
-            privileges.add(item.getName());
-        }
+        List<String> privileges = roles.stream().
+        							flatMap(role->role.getPrivileges().stream()).
+        							map(privilege -> privilege.getName()).
+        							collect(Collectors.toList());
         return privileges;
     }
 
